@@ -9,45 +9,46 @@ header{
 }
 header h1{
 
-  font-size: 3.5rem;
+  font-size: 5.5rem;
   margin: 1rem 0 .1rem 0;
 }
 
 header h2{
-  font-size: 1.5rem;
+  font-size: 2.5rem;
   margin: 0 0 1rem 0;;
 }
 h2,h3{
+  font-size: 2rem;
   margin: .75rem 0;
 }
 .field{
-  width: 20px;
-  height: 20px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
   text-align: center;
-  line-height: 20px;
+  line-height: 40px;
   font-size: 0;
   background-image: url('./img/klepa.PNG');
   background-size: cover;
   user-select: none;
 }
 .field.seek{
-  font-size: 12px;
+  font-size: 24px;
   background-color: #d9d9d9;
   box-sizing: border-box;
-  border: 1px solid #bcbcbc;
+  border: 2px solid #bcbcbc;
   cursor: auto;
   background-image: none;
 }
 .saper{
   display: flex;
   flex-wrap: wrap;
-  border: 2px solid #aaa;
+  border: 4px solid #aaa;
   margin: 0 auto;;
 }
 
-.saper.gameover .field{
-  cursor: auto;
+.saper.gameover .field,.saper.gamewon .field{
+  cursor: auto ;
 }
 
 .saper.gameover .bomb{
@@ -72,11 +73,13 @@ form > div{
 
 form > div > label{
   display: block;
-  width: 75px;
+  width: 125px;
+  font-size: 1.4rem;
 }
 form > div > input{
   display: block;
-  width: 75px;
+  width: 125px;
+  font-size: 1.4rem;
 }
 
 .area{
@@ -86,4 +89,9 @@ form > div > input{
 
 .scores{
   text-align: center;
+}
+button{
+  margin-top: 1rem;
+  font-size:1.6rem;
+  padding: .2rem 1rem;
 }

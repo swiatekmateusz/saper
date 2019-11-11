@@ -167,7 +167,6 @@ class Saper {
         }
       }
     }
-    console.log(this.field);
   }
 
   setArea = () => {
@@ -196,8 +195,8 @@ class Saper {
     // Stworzenie areny do sapera 
     const saperContainer = document.createElement('div')
     saperContainer.classList.add('saper')
-    saperContainer.style.width = `${this.width * 20}px`
-    saperContainer.style.height = `${this.height * 20}px`
+    saperContainer.style.width = `${this.width * 40}px`
+    saperContainer.style.height = `${this.height * 40}px`
     for (let i = 0; i < this.height; i++) {
       for (let j = 0; j < this.width; j++) {
         const div = document.createElement('div')
@@ -306,11 +305,12 @@ class Saper {
   }
 
   checkBombs = () => {
+    const minesFields2 = this.minesFields.map((item) => JSON.stringify({ x: `${item[0]}`, y: `${item[1]}` }))
     for (const bomb of this.mayBombs) {
       if (this.lose) break
       for (let i = 0; this.minesFields.length > i; i++) {
         const obj = JSON.stringify({ x: `${this.minesFields[i][0]}`, y: `${this.minesFields[i][1]}` })
-        if (obj !== bomb) {
+        if (!minesFields2.includes(obj)) {
           this.lose = true;
           this.gameOver()
           break
@@ -320,6 +320,8 @@ class Saper {
   }
 
   gameWon = () => {
+    const saper = document.querySelector('.saper')
+    saper.classList.add('gamewon')
     this.offSaper()
     new Scores(this.time, this.width, this.height, this.minesFields.length)
   }

@@ -57,8 +57,13 @@ h2,h3{
 }
 
 .field.mayBomb{
-  background-image: url('./img/pbomb.PNG');
+  background-image: url('./img/flaga.PNG');
   background-size: cover;
+}
+
+.saper.gameover .field.mayBomb.bomb{
+  background-image: url('./img/pbomb.PNG') !important;
+  background-size: cover ;
 }
 
 form{

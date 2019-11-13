@@ -80,12 +80,16 @@ class Form {
   }
 }
 
+
+//TO DO
+// usuniecie try catch
 class Saper {
   constructor(width, height, mines) {
     this.width = width
     this.height = height
     this.mines = mines
     this.field = []
+    this.discoverFields = []
     this.minesFields = []
     this.mayBombs = []
     this.time = 0
@@ -97,8 +101,10 @@ class Saper {
     // Wypełnienie palnszy zerami
     for (let i = 0; i < this.height; i++) {
       this.field[i] = []
+      this.discoverFields[i] = [];
       for (let j = 0; j < this.width; j++) {
         this.field[i][j] = 0
+        this.discoverFields[i][j] = false;
       }
     }
     // Wypełnienie planszy bombai
@@ -213,8 +219,9 @@ class Saper {
   }
 
   discover = (x, y) => {
-    try {
-      const div = document.querySelector(`[data-row="${y}"][data-col="${x}"]`)
+    const div = document.querySelector(`[data-row="${y}"][data-col="${x}"]`)
+    if (div) {
+      this.discoverFields[y][x] = true;
       if (this.field[y][x] === "B") {
         div.classList.add('bomb')
       } else {
@@ -223,66 +230,45 @@ class Saper {
       }
 
       div.removeEventListener('click', this.saperClick)
-    } catch (err) { }
-  }
-
-  zeroSquare = (x, y) => {
-    this.discover(x, y)
-    this.discover(x + 1, y)
-    this.discover(x - 1, y)
-    this.discover(x + 1, y + 1)
-    this.discover(x - 1, y + 1)
-    this.discover(x, y + 1)
-    this.discover(x + 1, y - 1)
-    this.discover(x - 1, y - 1)
-    this.discover(x, y - 1)
+      div.removeEventListener('contextmenu', this.saperClick)
+    }
   }
 
   saperZero = (x, y) => {
     y = parseInt(y)
     x = parseInt(x)
-    try {
-      if (this.field[y][x + 1] === 0) {
-        this.zeroSquare(x + 1, y)
-      }
-    } catch (error) { }
-    try {
-      if (this.field[y][x - 1] === 0) {
-        this.zeroSquare(x - 1, y)
-      }
-    } catch (error) { }
-    try {
-      if (this.field[y + 1][x - 1] === 0) {
-        this.zeroSquare(x - 1, y + 1)
-      }
-    } catch (error) { }
-    try {
-      if (this.field[y + 1][x + 1] === 0) {
-        this.zeroSquare(x + 1, y + 1)
-      }
-    } catch (error) { }
-    try {
-      if (this.field[y + 1][x] === 0) {
-        this.zeroSquare(x, y + 1)
-      }
-    } catch (error) { }
-    try {
-      if (this.field[y - 1][x - 1] === 0) {
-        this.zeroSquare(x - 1, y - 1)
-      }
-    } catch (error) { }
-    try {
-      if (this.field[y - 1][x + 1] === 0) {
-        this.zeroSquare(x + 1, y - 1)
-      }
-    } catch (error) { }
-    try {
-      if (this.field[y - 1][x] === 0) {
-        this.zeroSquare(x, y - 1)
-      }
-    } catch (error) { }
+    this.discover(x, y)
 
-    this.zeroSquare(x, y)
+    if (x + 1 < this.width && this.field[y][x + 1] === 0 && !this.discoverFields[y][x + 1]) {
+      this.saperZero(x + 1, y)
+    } else this.discover(x + 1, y)
+    if (x - 1 >= 0 && this.field[y][x - 1] === 0 && !this.discoverFields[y][x - 1]) {
+      this.saperZero(x - 1, y)
+    } else this.discover(x - 1, y)
+
+    if (x - 1 >= 0 && y + 1 < this.height && this.field[y + 1][x - 1] === 0 && !this.discoverFields[y + 1][x - 1]) {
+      this.saperZero(x - 1, y + 1)
+    } else this.discover(x - 1, y + 1)
+
+    if (x + 1 < this.width && y + 1 < this.height && this.field[y + 1][x + 1] === 0 && !this.discoverFields[y + 1][x + 1]) {
+      this.saperZero(x + 1, y + 1)
+    } else this.discover(x + 1, y + 1)
+
+    if (y + 1 < this.height && this.field[y + 1][x] === 0 && !this.discoverFields[y + 1][x]) {
+      this.saperZero(x, y + 1)
+    } else this.discover(x, y + 1)
+
+    if (x - 1 >= 0 && y - 1 >= 0 && this.field[y - 1][x - 1] === 0 && !this.discoverFields[y - 1][x - 1]) {
+      this.saperZero(x - 1, y - 1)
+    } else this.discover(x - 1, y - 1)
+
+    if (x + 1 < this.width && y - 1 >= 0 && this.field[y - 1][x + 1] === 0 && !this.discoverFields[y - 1][x + 1]) {
+      this.saperZero(x + 1, y - 1)
+    } else this.discover(x + 1, y - 1)
+
+    if (y - 1 >= 0 && this.field[y - 1][x] === 0 && !this.discoverFields[y - 1][x]) {
+      this.saperZero(x, y - 1)
+    } else this.discover(x, y - 1)
   }
 
   offSaper = () => {
@@ -374,6 +360,7 @@ class Saper {
   }
 }
 
+// Wszystko z cookies
 class Scores {
   constructor(time, width, height, bombsCount) {
     this.won = time ? true : false;

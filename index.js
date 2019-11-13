@@ -17,17 +17,12 @@ class Form {
 
   formSubmit = e => {
     e.preventDefault()
-    if (this.height && this.width && this.mines) {
+    if (this.height > 0 && this.width > 0 && this.mines && this.height * this.width > this.mines) {
       const form = document.querySelector('.form')
       form.innerHTML = ""
       new Saper(this.width, this.height, this.mines)
-
-      e.target.querySelectorAll('input').forEach(element => {
-        element.disabled = true;
-      });
-      e.target.querySelector('button').disabled = true;
     } else {
-      alert("Uzupełnij wszystki pola!")
+      alert("Uzupełnij prawidłowo wszystkie pola!")
     }
   }
 
@@ -80,20 +75,23 @@ class Form {
   }
 }
 
-
-//TO DO
-// usuniecie try catch
 class Saper {
   constructor(width, height, mines) {
     this.width = width
     this.height = height
+    // Count of mines
     this.mines = mines
+    // Filled fields
     this.field = []
+    // Is filed discovered
     this.discoverFields = []
+    // Filed that are mines on
     this.minesFields = []
+    // Player bombs predicts
     this.mayBombs = []
     this.time = 0
     this.prepareGame()
+    // Interval index of timer
     this.timer;
     this.lose = false;
   }
@@ -209,7 +207,6 @@ class Saper {
         div.classList.add('field')
         div.setAttribute('data-row', i)
         div.setAttribute('data-col', j)
-        //div.textContent = this.field[i][j]
         div.addEventListener('click', this.saperClick)
         div.addEventListener('contextmenu', this.saperClick)
         saperContainer.appendChild(div)
@@ -218,22 +215,22 @@ class Saper {
     container.appendChild(saperContainer)
   }
 
+  // Discover any field
   discover = (x, y) => {
     const div = document.querySelector(`[data-row="${y}"][data-col="${x}"]`)
     if (div) {
       this.discoverFields[y][x] = true;
-      if (this.field[y][x] === "B") {
-        div.classList.add('bomb')
-      } else {
-        div.textContent = this.field[y][x]
+      if (this.field[y][x] === "B") div.classList.add('bomb')
+      else {
+        div.textContent = this.field[y][x] ? this.field[y][x] : ""
         div.classList.add('seek')
       }
-
       div.removeEventListener('click', this.saperClick)
       div.removeEventListener('contextmenu', this.saperClick)
     }
   }
 
+  // When you click on zero...
   saperZero = (x, y) => {
     y = parseInt(y)
     x = parseInt(x)
@@ -271,6 +268,7 @@ class Saper {
     } else this.discover(x, y - 1)
   }
 
+  // Show bombs and off listeners
   offSaper = () => {
     for (const el of this.minesFields) {
       this.discover(el[0], el[1])
@@ -283,13 +281,7 @@ class Saper {
     clearInterval(this.timer)
   }
 
-  gameOver = () => {
-    const saper = document.querySelector('.saper')
-    saper.classList.add('gameover')
-    this.offSaper()
-    new Scores()
-  }
-
+  // Check correct of player predict when count of mines is equal to zero
   checkBombs = () => {
     const minesFields2 = this.minesFields.map((item) => JSON.stringify({ x: `${item[0]}`, y: `${item[1]}` }))
     for (const bomb of this.mayBombs) {
@@ -298,18 +290,18 @@ class Saper {
         const obj = JSON.stringify({ x: `${this.minesFields[i][0]}`, y: `${this.minesFields[i][1]}` })
         if (!minesFields2.includes(obj)) {
           this.lose = true;
-          this.gameOver()
           break
         }
       }
     }
   }
 
-  gameWon = () => {
+  gameEnd = () => {
     const saper = document.querySelector('.saper')
-    saper.classList.add('gamewon')
+    saper.classList.add(this.lose ? 'gameover' : 'gamewon')
     this.offSaper()
-    new Scores(this.time, this.width, this.height, this.minesFields.length)
+    this.lose ? new Scores() : new Scores(this.time, this.width, this.height, this.minesFields.length)
+
   }
 
   saperClick = (e) => {
@@ -318,17 +310,13 @@ class Saper {
     if (e.button === 0) {
       if (this.field[row][col] === "B") {
         this.discover(col, row)
-        const div = document.querySelector(`[data-row="${row}"][data-col="${col}"]`)
-        div.classList.add('bomb')
-        this.gameOver()
+        this.lose = true
+        this.gameEnd()
       } else if (this.field[row][col] === 0) {
         this.saperZero(col, row)
       } else {
-        e.target.classList.add('seek')
-        e.target.removeEventListener('click', this.saperClick)
-        e.target.removeEventListener('contextmenu', this.saperClick)
+        this.discover(col, row)
       }
-      e.target.textContent = this.field[row][col]
     }
     if (e.button === 2) {
       const span = document.querySelector('.minesCount')
@@ -344,10 +332,9 @@ class Saper {
         this.mines--;
         if (this.mines === 0) {
           this.checkBombs()
-          if (!this.lose) {
-            this.gameWon()
-            console.log("Wygrales!");
-          }
+
+          this.gameEnd()
+
         }
       }
       span.textContent = this.mines
@@ -370,8 +357,8 @@ class Scores {
     //this.generateTable()
     //this.setCookies()
     this.restartButton()
-
   }
+
   restartButton = () => {
     const score = document.querySelector('.scores')
     const h3 = document.createElement('h3')
@@ -392,7 +379,8 @@ class Scores {
   }
 
   addNewScore = (time, width, height, bombsCount) => {
-
+    if (time) console.log("Dodajemy");
+    else console.log("Nie dodajemy");
   }
 }
 

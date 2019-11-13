@@ -121,53 +121,30 @@ class Saper {
     for (let i = 0; i < this.height; i++) {
       for (let j = 0; j < this.width; j++) {
         if (this.field[i][j] !== "B") {
-          try {
-            if (this.field[i][j + 1] === "B") {
-              this.field[i][j] += 1
-            }
-          } catch (error) { }
-
-          try {
-            if (this.field[i][j - 1] === "B") {
-              this.field[i][j] += 1
-            }
-          } catch (error) { }
-
-          try {
-            if (this.field[i + 1][j] === "B") {
-              this.field[i][j] += 1
-            }
-          } catch (error) { }
-
-          try {
-            if (this.field[i + 1][j + 1] === "B") {
-              this.field[i][j] += 1
-            }
-          } catch (error) { }
-
-          try {
-            if (this.field[i + 1][j - 1] === "B") {
-              this.field[i][j] += 1
-            }
-          } catch (error) { }
-
-          try {
-            if (this.field[i - 1][j + 1] === "B") {
-              this.field[i][j] += 1
-            }
-          } catch (error) { }
-
-          try {
-            if (this.field[i - 1][j - 1] === "B") {
-              this.field[i][j] += 1
-            }
-          } catch (error) { }
-
-          try {
-            if (this.field[i - 1][j] === "B") {
-              this.field[i][j] += 1
-            }
-          } catch (error) { }
+          if (j + 1 < this.width && this.field[i][j + 1] === "B") {
+            this.field[i][j] += 1
+          }
+          if (j - 1 >= 0 && this.field[i][j - 1] === "B") {
+            this.field[i][j] += 1
+          }
+          if (i + 1 < this.height && this.field[i + 1][j] === "B") {
+            this.field[i][j] += 1
+          }
+          if (i + 1 < this.height && j + 1 < this.width && this.field[i + 1][j + 1] === "B") {
+            this.field[i][j] += 1
+          }
+          if (i + 1 < this.height && j - 1 >= 0 && this.field[i + 1][j - 1] === "B") {
+            this.field[i][j] += 1
+          }
+          if (i - 1 >= 0 && j + 1 < this.width && this.field[i - 1][j + 1] === "B") {
+            this.field[i][j] += 1
+          }
+          if (i - 1 >= 0 && j - 1 >= 0 && this.field[i - 1][j - 1] === "B") {
+            this.field[i][j] += 1
+          }
+          if (i - 1 >= 0 && this.field[i - 1][j] === "B") {
+            this.field[i][j] += 1
+          }
         }
       }
     }

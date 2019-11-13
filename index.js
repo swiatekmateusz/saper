@@ -17,7 +17,7 @@ class Form {
 
   formSubmit = e => {
     e.preventDefault()
-    if (this.height > 0 && this.width > 0 && this.mines && this.height * this.width > this.mines) {
+    if (this.height > 0 && this.width > 0 && this.mines > 0 && this.height * this.width > this.mines) {
       const form = document.querySelector('.form')
       form.innerHTML = ""
       new Saper(this.width, this.height, this.mines)

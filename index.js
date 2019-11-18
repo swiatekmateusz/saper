@@ -204,6 +204,9 @@ class Saper {
       }
       div.removeEventListener('click', this.saperClick)
       div.removeEventListener('contextmenu', this.saperClick)
+      div.addEventListener('contextmenu', e => {
+        e.preventDefault()
+      })
     }
   }
 
@@ -212,37 +215,49 @@ class Saper {
     y = parseInt(y)
     x = parseInt(x)
     this.discover(x, y)
+    if (!this.mayBombs.includes(JSON.stringify({ x: `${x + 1}`, y: `${y}` }))) {
+      if (x + 1 < this.width && this.field[y][x + 1] === 0 && !this.discoverFields[y][x + 1]) {
+        this.saperZero(x + 1, y)
+      } else this.discover(x + 1, y)
+    }
 
-    if (x + 1 < this.width && this.field[y][x + 1] === 0 && !this.discoverFields[y][x + 1]) {
-      this.saperZero(x + 1, y)
-    } else this.discover(x + 1, y)
-    if (x - 1 >= 0 && this.field[y][x - 1] === 0 && !this.discoverFields[y][x - 1]) {
-      this.saperZero(x - 1, y)
-    } else this.discover(x - 1, y)
+    if (!this.mayBombs.includes(JSON.stringify({ x: `${x - 1}`, y: `${y}` }))) {
+      if (x - 1 >= 0 && this.field[y][x - 1] === 0 && !this.discoverFields[y][x - 1]) {
+        this.saperZero(x - 1, y)
+      } else this.discover(x - 1, y)
+    }
 
-    if (x - 1 >= 0 && y + 1 < this.height && this.field[y + 1][x - 1] === 0 && !this.discoverFields[y + 1][x - 1]) {
-      this.saperZero(x - 1, y + 1)
-    } else this.discover(x - 1, y + 1)
+    if (!this.mayBombs.includes(JSON.stringify({ x: `${x - 1}`, y: `${y + 1}` }))) {
+      if (x - 1 >= 0 && y + 1 < this.height && this.field[y + 1][x - 1] === 0 && !this.discoverFields[y + 1][x - 1]) {
+        this.saperZero(x - 1, y + 1)
+      } else this.discover(x - 1, y + 1)
+    }
 
-    if (x + 1 < this.width && y + 1 < this.height && this.field[y + 1][x + 1] === 0 && !this.discoverFields[y + 1][x + 1]) {
-      this.saperZero(x + 1, y + 1)
-    } else this.discover(x + 1, y + 1)
-
-    if (y + 1 < this.height && this.field[y + 1][x] === 0 && !this.discoverFields[y + 1][x]) {
-      this.saperZero(x, y + 1)
-    } else this.discover(x, y + 1)
-
-    if (x - 1 >= 0 && y - 1 >= 0 && this.field[y - 1][x - 1] === 0 && !this.discoverFields[y - 1][x - 1]) {
-      this.saperZero(x - 1, y - 1)
-    } else this.discover(x - 1, y - 1)
-
-    if (x + 1 < this.width && y - 1 >= 0 && this.field[y - 1][x + 1] === 0 && !this.discoverFields[y - 1][x + 1]) {
-      this.saperZero(x + 1, y - 1)
-    } else this.discover(x + 1, y - 1)
-
-    if (y - 1 >= 0 && this.field[y - 1][x] === 0 && !this.discoverFields[y - 1][x]) {
-      this.saperZero(x, y - 1)
-    } else this.discover(x, y - 1)
+    if (!this.mayBombs.includes(JSON.stringify({ x: `${x + 1}`, y: `${y + 1}` }))) {
+      if (x + 1 < this.width && y + 1 < this.height && this.field[y + 1][x + 1] === 0 && !this.discoverFields[y + 1][x + 1]) {
+        this.saperZero(x + 1, y + 1)
+      } else this.discover(x + 1, y + 1)
+    }
+    if (!this.mayBombs.includes(JSON.stringify({ x: `${x}`, y: `${y + 1}` }))) {
+      if (y + 1 < this.height && this.field[y + 1][x] === 0 && !this.discoverFields[y + 1][x]) {
+        this.saperZero(x, y + 1)
+      } else this.discover(x, y + 1)
+    }
+    if (!this.mayBombs.includes(JSON.stringify({ x: `${x - 1}`, y: `${y - 1}` }))) {
+      if (x - 1 >= 0 && y - 1 >= 0 && this.field[y - 1][x - 1] === 0 && !this.discoverFields[y - 1][x - 1]) {
+        this.saperZero(x - 1, y - 1)
+      } else this.discover(x - 1, y - 1)
+    }
+    if (!this.mayBombs.includes(JSON.stringify({ x: `${x + 1}`, y: `${y - 1}` }))) {
+      if (x + 1 < this.width && y - 1 >= 0 && this.field[y - 1][x + 1] === 0 && !this.discoverFields[y - 1][x + 1]) {
+        this.saperZero(x + 1, y - 1)
+      } else this.discover(x + 1, y - 1)
+    }
+    if (!this.mayBombs.includes(JSON.stringify({ x: `${x}`, y: `${y - 1}` }))) {
+      if (y - 1 >= 0 && this.field[y - 1][x] === 0 && !this.discoverFields[y - 1][x]) {
+        this.saperZero(x, y - 1)
+      } else this.discover(x, y - 1)
+    }
   }
 
   // Show bombs and off listeners
@@ -264,7 +279,8 @@ class Saper {
     for (const bomb of this.mayBombs) {
       if (this.lose) break
       for (let i = 0; this.minesFields.length > i; i++) {
-        const obj = JSON.stringify({ x: `${this.minesFields[i][0]}`, y: `${this.minesFields[i][1]}` })
+        const { x, y } = JSON.parse(bomb)
+        const obj = JSON.stringify({ x: `${x}`, y: `${y}` }) //
         if (!minesFields2.includes(obj)) {
           this.lose = true;
           break
@@ -284,7 +300,7 @@ class Saper {
   saperClick = (e) => {
     e.preventDefault()
     const { row, col } = e.target.dataset
-    if (e.button === 0) {
+    if (e.button === 0 && !this.mayBombs.includes(JSON.stringify({ x: `${col}`, y: `${row}` }))) {
       if (this.field[row][col] === "B") {
         this.discover(col, row)
         this.lose = true
@@ -309,9 +325,7 @@ class Saper {
         this.mines--;
         if (this.mines === 0) {
           this.checkBombs()
-
           this.gameEnd()
-
         }
       }
       span.textContent = this.mines
@@ -356,8 +370,8 @@ class Scores {
   }
 
   addNewScore = (time, width, height, bombsCount) => {
-    if (time) console.log("Dodajemy");
-    else console.log("Nie dodajemy");
+    // if (time) console.log("Dodajemy");
+    // else console.log("Nie dodajemy");
   }
 }
 

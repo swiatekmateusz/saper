@@ -93,7 +93,20 @@ form > div > input{
 }
 
 .scores{
+  display: flex;
+  flex-direction: column;
+  max-width: 200px;
+  margin: 0 auto;
   text-align: center;
+}
+
+.scores input{
+  font-size: 1.3rem;
+  padding: .6rem;
+}
+
+.scores button{
+  margin-bottom: 2rem;
 }
 button{
   margin-top: 1rem;

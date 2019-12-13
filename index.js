@@ -343,10 +343,8 @@ class Scores {
   constructor(time, width, height, bombsCount) {
     this.won = time ? true : false;
     this.stats = {}
-    //this.getCookies()
     this.addNewScore(time, width, height, bombsCount)
-    //this.generateTable()
-    //this.setCookies()
+    this.generateTable
     this.restartButton()
   }
 
@@ -369,9 +367,61 @@ class Scores {
     score.append(btn)
   }
 
+  generateTable = (cookies) => {
+    console.log(cookies);
+  }
+
   addNewScore = (time, width, height, bombsCount) => {
-    // if (time) console.log("Dodajemy");
-    // else console.log("Nie dodajemy");
+    if (this.won) {
+      let nick = ''
+      const score = document.querySelector('.scores');
+      const input = document.createElement('input')
+      input.setAttribute('placeholder', 'Wpisz swój nick!')
+      const btn = document.createElement('button')
+      btn.textContent = "Dodaj wynik"
+      btn.addEventListener('click', () => {
+        if (input.value) {
+          nick = input.value
+          let cookies
+          const scoreObj = {
+            nick, time, width, height, bombsCount
+          }
+          // Jezeli cookies istnieja
+
+          if (document.cookie) {
+            //Odczytywanie cookie
+            cookies = JSON.parse(document.cookie.substring(7))
+            //Sortuje czasem
+            cookies.sort((a, b) => a.time - b.time)
+            // Dodaje nowy wynik jezeli nowy czas jest lepszy
+            // od jakiegos starego lub jest mniej niz 10 wyników
+            for (let i = 0; i < cookies.length; i++) {
+              if (cookies.length < 10) {
+                cookies.push(scoreObj)
+                break;
+              }
+              if (cookies[i].time >= time) {
+                if (cookies.length >= 10) cookies.pop()
+                cookies.push(scoreObj)
+                console.log("push");
+                break
+              }
+            }
+            cookies.sort((a, b) => a.time - b.time)
+            document.cookie = `scores=${JSON.stringify(cookies)}`
+            //console.log(JSON.stringify(cookies));
+          } else {
+            //pierwszy cookie
+            document.cookie = `scores=[${JSON.stringify(scoreObj)}]`
+          }
+          btn.remove()
+          input.remove()
+          this.generateTable(cookies)
+        }
+      })
+      score.prepend(btn)
+      score.prepend(input)
+    }
   }
 }
 

@@ -32,6 +32,10 @@ h2,h3{
   background-size: cover;
   user-select: none;
 }
+
+.field.q{
+  background-image: url('./img/pyt.PNG');
+}
 .field.seek{
   font-size: 24px;
   background-color: #d9d9d9;
@@ -112,4 +116,15 @@ button{
   margin-top: 1rem;
   font-size:1.6rem;
   padding: .2rem 1rem;
+}
+
+table{
+  margin: 0 auto 2rem auto;
+}
+
+td,th{
+  width: 75px;
+  text-align: center;
+  border: 1px solid black;
+  padding: .2rem 0;
 }

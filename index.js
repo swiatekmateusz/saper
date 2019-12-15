@@ -89,12 +89,13 @@ class Saper {
     this.minesFields = []
     // Player bombs predicts
     this.mayBombs = []
-    this.time = 0
+    this.time = 1
     this.prepareGame()
     // Interval index of timer
     this.timer;
     this.lose = false;
   }
+
   setMines = () => {
     // Wypełnienie palnszy zerami
     for (let i = 0; i < this.height; i++) {
@@ -320,12 +321,17 @@ class Saper {
         this.mayBombs.splice(index, 1)
         this.mines++
       } else if (this.mines > 0) {
-        e.target.classList.add('mayBomb')
-        this.mayBombs.push(JSON.stringify({ x: col, y: row }))
-        this.mines--;
-        if (this.mines === 0) {
-          this.checkBombs()
-          this.gameEnd()
+        if (e.target.classList.contains('q')) {
+          e.target.classList.remove('q')
+          e.target.classList.add('mayBomb')
+          this.mayBombs.push(JSON.stringify({ x: col, y: row }))
+          this.mines--;
+          if (this.mines === 0) {
+            this.checkBombs()
+            this.gameEnd()
+          }
+        } else {
+          e.target.classList.add('q')
         }
       }
       span.textContent = this.mines
@@ -362,13 +368,47 @@ class Scores {
       area.innerHTML = ""
       const scores = document.querySelector('.scores')
       scores.innerHTML = ""
+      const table = document.querySelector('.table')
+      table.innerHTML = ""
       new Form()
     })
     score.append(btn)
   }
 
   generateTable = (cookies) => {
+    const area = document.querySelector('.area')
+    area.innerHTML = ""
+    const table = document.querySelector('.table')
+    const bestScores = document.createElement('table')
+    const tr = document.createElement('tr')
+    const thead = ["Nick", "Time", "Width", "Height", "Bombs"]
+    for (let i = 0; i < 5; i++) {
+      const th = document.createElement('th')
+      th.textContent = thead[i]
+      tr.appendChild(th)
+    }
+    bestScores.appendChild(tr)
+    cookies.forEach(cookie => {
+      const tr = document.createElement('tr')
+      const nick = document.createElement('td')
+      nick.textContent = cookie.nick
+      tr.append(nick)
+      const time = document.createElement('td')
+      time.textContent = cookie.time
+      tr.append(time)
+      const width = document.createElement('td')
+      width.textContent = cookie.width
+      tr.append(width)
+      const height = document.createElement('td')
+      height.textContent = cookie.height
+      tr.append(height)
+      const bombsCount = document.createElement('td')
+      bombsCount.textContent = cookie.bombsCount
+      tr.append(bombsCount)
+      bestScores.append(tr)
+    })
     console.log(cookies);
+    table.appendChild(bestScores)
   }
 
   addNewScore = (time, width, height, bombsCount) => {

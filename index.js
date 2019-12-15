@@ -381,15 +381,18 @@ class Scores {
     const table = document.querySelector('.table')
     const bestScores = document.createElement('table')
     const tr = document.createElement('tr')
-    const thead = ["Nick", "Time", "Width", "Height", "Bombs"]
-    for (let i = 0; i < 5; i++) {
+    const thead = ["LP", "Nick", "Time", "Width", "Height", "Bombs"]
+    for (let i = 0; i < thead.length; i++) {
       const th = document.createElement('th')
       th.textContent = thead[i]
       tr.appendChild(th)
     }
     bestScores.appendChild(tr)
-    cookies.forEach(cookie => {
+    cookies.forEach((cookie, i) => {
       const tr = document.createElement('tr')
+      const lp = document.createElement('td')
+      lp.textContent = i + 1
+      tr.append(lp)
       const nick = document.createElement('td')
       nick.textContent = cookie.nick
       tr.append(nick)
@@ -450,13 +453,15 @@ class Scores {
             cookies.sort((a, b) => a.time - b.time)
             document.cookie = `scores=${JSON.stringify(cookies)}`
             //console.log(JSON.stringify(cookies));
+            this.generateTable(cookies)
           } else {
             //pierwszy cookie
             document.cookie = `scores=[${JSON.stringify(scoreObj)}]`
+            this.generateTable([scoreObj])
           }
           btn.remove()
           input.remove()
-          this.generateTable(cookies)
+
         }
       })
       score.prepend(btn)

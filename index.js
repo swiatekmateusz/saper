@@ -376,42 +376,63 @@ class Scores {
   }
 
   generateTable = (cookies) => {
-    const area = document.querySelector('.area')
-    area.innerHTML = ""
-    const table = document.querySelector('.table')
-    const bestScores = document.createElement('table')
-    const tr = document.createElement('tr')
-    const thead = ["LP", "Nick", "Time", "Width", "Height", "Bombs"]
-    for (let i = 0; i < thead.length; i++) {
-      const th = document.createElement('th')
-      th.textContent = thead[i]
-      tr.appendChild(th)
-    }
-    bestScores.appendChild(tr)
-    cookies.forEach((cookie, i) => {
-      const tr = document.createElement('tr')
-      const lp = document.createElement('td')
-      lp.textContent = i + 1
-      tr.append(lp)
-      const nick = document.createElement('td')
-      nick.textContent = cookie.nick
-      tr.append(nick)
-      const time = document.createElement('td')
-      time.textContent = cookie.time
-      tr.append(time)
-      const width = document.createElement('td')
-      width.textContent = cookie.width
-      tr.append(width)
-      const height = document.createElement('td')
-      height.textContent = cookie.height
-      tr.append(height)
-      const bombsCount = document.createElement('td')
-      bombsCount.textContent = cookie.bombsCount
-      tr.append(bombsCount)
-      bestScores.append(tr)
-    })
     console.log(cookies);
-    table.appendChild(bestScores)
+    cookies.sort((a, b) => {
+      if (a.width === b.width && a.height === b.height && a.bombsCount === b.bombsCount) {
+        return a.bombsCount + b.bombsCount;
+      }
+      return a.bombsCount - b.bombsCount;
+    });
+    const scores = []
+    let possibilities = 0
+    for (let i = 0; i < cookies.length; i++) {
+
+      if (i > 0) {
+        if (cookies[i].width === cookies[i - 1].width && cookies[i].height === cookies[i - 1].height && cookies[i].bombsCount === cookies[i - 1].bombsCount) {
+          scores[possibilities - 1].push(cookies[i])
+        } else {
+          scores.push([cookies[i]])
+          possibilities++;
+        }
+      }
+      if (i === 0) {
+        scores.push([cookies[i]])
+        possibilities++;
+      }
+    }
+    scores.forEach((score, i) => {
+      const area = document.querySelector('.area')
+      area.innerHTML = ""
+      const table = document.querySelector('.table')
+      const bestScores = document.createElement('table')
+      const tr = document.createElement('tr')
+      const h1 = document.createElement('h1')
+
+      const thead = ["LP", "Nick", "Time"]
+      for (let i = 0; i < thead.length; i++) {
+        const th = document.createElement('th')
+        th.textContent = thead[i]
+        tr.appendChild(th)
+      }
+      bestScores.appendChild(tr)
+      score.forEach((cookie, i) => {
+        const tr = document.createElement('tr')
+        const lp = document.createElement('td')
+        lp.textContent = i + 1
+        tr.append(lp)
+        const nick = document.createElement('td')
+        nick.textContent = cookie.nick
+        tr.append(nick)
+        const time = document.createElement('td')
+        time.textContent = cookie.time
+        tr.append(time)
+        bestScores.append(tr)
+        h1.textContent = `Mode - W:${cookie.width} / H:${cookie.height} / B:${cookie.bombsCount}`
+      })
+      table.appendChild(h1)
+      table.appendChild(bestScores)
+    })
+    console.log(scores);
   }
 
   addNewScore = (time, width, height, bombsCount) => {
